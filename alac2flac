@@ -1,0 +1,39 @@
+#!/bin/sh
+
+echo ""
+echo "alac2flac - script to convert ALAC audio to FLAC"
+echo "By Arlindo \"Nighto\" Pereira"
+echo "<nighto@nighto.net>"
+echo "(C) 2010. Licensed on GPLv3"
+echo ""
+
+if [ "$1" ]
+then
+	# Trying to grab the cover art
+	rm /tmp/alac2flac* 2> /dev/null
+	if [ "$2" ]
+	then
+		cp "$2" /tmp/alac2flac
+	else
+		rm /tmp/alac2flac* 2> /dev/null # should I prefer the embedded art or the given one? Think I should go with the second one.
+		mp4art "$1" /tmp/alac2flac 2> /dev/null
+	fi
+	
+	alac-decoder "$1" | flac - --output-name="`basename "$1" .m4a`.flac" --compression-level-8 \
+		--tag=TITLE="$(mp4info "$1" | grep Name: | cut -d: -f 2 | cut -d' ' -f 2-)" \
+		--tag=ARTIST="$(mp4info "$1" | grep Artist: | cut -d: -f 2 | cut -d' ' -f 2-)" \
+		--tag=ALBUM="$(mp4info "$1" | grep Album: | cut -d: -f 2 | cut -d' ' -f 2-)" \
+		--tag=DISCNUMBER="$(mp4info "$1" | grep Disk: | cut -d: -f 2 | cut -d' ' -f 2)" \
+		--tag=DATE="$(mp4info "$1" | grep Year: | cut -d: -f 2 | cut -d' ' -f 2-)" \
+		--tag=TRACKNUMBER="$(mp4info "$1" | grep Track: | cut -d: -f 2 | cut -d' ' -f 2)" \
+		--tag=TRACKTOTAL="$(mp4info "$1" | grep Track: | cut -d: -f 2 | cut -d' ' -f 4)" \
+		--tag=TOTALTRACKS="$(mp4info "$1" | grep Track: | cut -d: -f 2 | cut -d' ' -f 4)" \
+		--tag=GENRE="$(mp4info "$1" | grep Genre: | cut -d: -f 2 | cut -d' ' -f 2-)" \
+		--picture=$(echo /tmp/alac2flac*) # FIXME: this will probably break if there's no picture at all.
+
+else
+	echo "Usage:"
+	echo "alac2flac file.m4a [cover]"
+	echo ""
+exit 1
+fi
