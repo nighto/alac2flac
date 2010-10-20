@@ -1,0 +1,12 @@
+Package: alac2flac
+Version: 20101020
+Architecture: all
+Maintainer: Arlindo "Nighto" Pereira <nighto@nighto.net>
+Installed-Size: 4
+Depends: flac, alac-decoder, mpeg4ip-utils
+Section: multimedia
+Priority: optional
+Homepage: http://github.com/nighto/alac2flac
+Description: A script for converting ALAC files to FLAC
+ alac2flac is a shell script to convert ALAC (Apple Lossless Audio Codec, 
+ used on iPod/iPhone/iPad files) format to FLAC (Free Lossless Audio Codec).
